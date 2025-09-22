@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>App Gerenciador Financeiro</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Arimo:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../static/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>App Gerenciador Financeiro</h1>
+        
+        <!-- Seção de Saldo -->
+        <h2 class="{{ 'saldo-positivo' if saldo >= 0 else 'saldo-negativo' }}">
+            Saldo Atual: R$ {{ "%.2f"|format(saldo) }}
+        </h2>
+
+        <!-- Formulários para Adicionar Transações -->
+        <div class="form-container">
+            <div class="form-section">
+                <h3>Adicionar Receita</h3>
+                <form action="/adicionar" method="post">
+                    <input type="hidden" name="categoria" value="Receita">
+                    <input type="text" name="nome" placeholder="Ex: Salário" required>
+                    <input type="number" name="valor" step="0.01" min="0.01" placeholder="Valor" required>
+                    <input type="submit" value="Adicionar Receita" class="btn-receita">
+                </form>
+            </div>
+            <div class="form-section">
+                <h3>Adicionar Despesa</h3>
+                <form action="/adicionar" method="post">
+                    <input type="hidden" name="categoria" value="Despesa">
+                    <input type="text" name="nome" placeholder="Ex: Aluguel" required>
+                    <input type="number" name="valor" step="0.01" min="0.01" placeholder="Valor" required>
+                    <input type="submit" value="Adicionar Despesa" class="btn-despesa">
+                </form>
+            </div>
+        </div>
+
+        <!-- Tabela de Transações -->
+        <h2>Extrato</h2>
+        {% if transacoes %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>nome</th>
+                        <th>Valor</th>
+                        <th>categoria</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for t in transacoes|reverse %}
+                    <tr>
+                        <td>{{ t.nome }}</td>
+                        <td class="{{ t.categoria|lower }}">{{ "%.2f"|format(t.valor) }}</td>
+                        <td class="{{ t.categoria|lower }}">{{ t.categoria }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p class="no-data">Nenhuma transação registrada ainda.</p>
+        {% endif %}
+    </div>
+</body>
+</html>
